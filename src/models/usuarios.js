@@ -24,15 +24,6 @@ const usuarioSchema = new mongoose.Schema(
       maxlength: [50, "El apellido materno no puede exceder 50 caracteres"],
     },
     edad: { type: Number, required: true, min: 18, max: 120 },
-    numesocial: {
-      type: String,
-      required: true,
-      unique: true,
-      match: [
-        /^\d{10}$/,
-        "El número de seguro social debe tener exactamente 10 dígitos numéricos",
-      ],
-    },
     password: { type: String },
     email: {
       type: String,
