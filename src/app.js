@@ -7,22 +7,29 @@ dotenv.config();
 const connectDB = require("./config/db");
 const app = express();
 
+// Conexión a base de datos
 connectDB();
 
-// Middlewares necesarios para Postman
+// Middlewares globales
 app.use(cors());
 app.use(express.json());
 
-// Conectar rutas (si este require truena, tu problema está en routers/user.js o controllers)
+// Rutas de usuarios
 const userRoutes = require("./routers/user");
 app.use("/api/users", userRoutes);
 
-// Tu landing
+// Rutas de administrador
+const adminRoutes = require("./routers/admin");
+app.use("/api/admin", adminRoutes);
+
+// Ruta base (landing)
 app.get("/", (req, res) => {
-  res.send(`<html> ... tu html ... </html>`);
+  res.send(`<html><h1>App Joli Backend</h1></html>`);
 });
 
+// Puerto
 const PORT = process.env.PORT || 8080;
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
