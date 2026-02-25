@@ -7,7 +7,7 @@ module.exports = function auth(req, res, next) {
 
 
 
-    
+
 
     // Esperamos: Authorization: Bearer <token>
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -30,3 +30,6 @@ module.exports = function auth(req, res, next) {
     return res.status(401).json({ message: "Token inválido o expirado" });
   }
 };
+
+
+
