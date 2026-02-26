@@ -49,6 +49,11 @@ const usuarioSchema = new mongoose.Schema(
       ],
       default: "",
     },
+  role: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Role",
+      required: true,
+    },
   },
   { timestamps: true }
 );
