@@ -16,13 +16,10 @@ app.use(express.json());
 const userRoutes = require("./routers/user");
 app.use("/api/users", userRoutes);
 
-// Rutas de administrador
-const adminRoutes = require("./routers/admin");
-app.use("/api/admin", adminRoutes);
 
 // Ruta base (landing)
 app.get("/", (req, res) => {
-  res.send(`<html><h1>App Joli Backend pruebas</h1></html>`);
+  res.send(`<html><h1>App Joli Backend - </h1></html>`);
 });
 
 
