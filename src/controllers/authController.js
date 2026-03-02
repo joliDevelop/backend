@@ -3,11 +3,7 @@ const jwt = require("jsonwebtoken");
 
 module.exports = function auth(req, res, next) {
   try {
-    const authHeader = req.headers.authorization;
-
-
-
-
+    const authHeader = req.headers.authorization;m
 
     // Esperamos: Authorization: Bearer <token>
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
