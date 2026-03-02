@@ -1,7 +1,7 @@
 const User = require("../models/usuarios");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const Role = require("../models/Role");
+const Role = require("../models/role");
 
 exports.registerUser = async (req, res) => {
   try {
@@ -17,7 +17,7 @@ exports.registerUser = async (req, res) => {
       telefono,
     } = req.body;
 
-    // 🔥 1) PRIMERO validar email
+    // 1) PRIMERO validar email
     if (!email) {
       return res.status(400).json({ message: "El correo es obligatorio" });
     }
@@ -159,7 +159,7 @@ exports.loginUser = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: "Usuario no encontrado",
+        message: "Correo no encontrado",
         campo: "email"
       });
     }

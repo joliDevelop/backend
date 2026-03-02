@@ -8,9 +8,6 @@ dotenv.config();
 const connectDB = require("./config/db");
 const app = express();
 
-// Conexión a base de datos
-connectDB();
-
 // Middlewares globales
 app.use(cors());
 app.use(express.json());
@@ -25,14 +22,25 @@ app.use("/api/admin", adminRoutes);
 
 // Ruta base (landing)
 app.get("/", (req, res) => {
-  res.send(`<html><h1>App Joli Backend</h1></html>`);
+  res.send(`<html><h1>App Joli Backend pruebas</h1></html>`);
 });
 
-// Puerto
-const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
 
+    const PORT = process.env.PORT || 8080;
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Servidor corriendo en el puerto ${PORT}`);
+    });
+
+  } catch (error) {
+    console.error("Error al iniciar servidor:", error);
+    process.exit(1); 
+  }
+};
+
+startServer();
 module.exports = app;
