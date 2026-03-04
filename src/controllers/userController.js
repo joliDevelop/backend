@@ -58,6 +58,8 @@ if (!passwordRegex.test(String(password))) {
   });
 }
 
+
+
     const cleanNombre = String(nombre).trim();
     const cleanApellidoP = String(apellidoP).trim();
     const cleanApellidoM = String(apellidoM).trim();
