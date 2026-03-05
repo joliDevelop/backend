@@ -13,7 +13,7 @@ describe("Auth endpoints", () => {
         apellidoM: "Dev",
         edad: 25,
         email: "hector@test.com",
-        password: "123456",
+        password: "hector@123",
         confirmPassword: "123456",
         lada: "+52",
         telefono: "4421234500"
@@ -28,7 +28,7 @@ describe("Auth endpoints", () => {
       .post("/api/users/login")
       .send({
         email: "hector@test.com",
-        password: "123456"
+        password: "hector@123"
       });
 
     expect(res.statusCode).toBe(200);
