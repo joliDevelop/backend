@@ -28,28 +28,4 @@ jobs:
         run: npm test
 
 
-  deploy:
-    name: Deploy Cloud Run
-    needs: test
-    runs-on: ubuntu-latest
-
-    steps:
-
-      - name: Clonar repo
-        uses: actions/checkout@v4
-
-      - name: Login Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
-
-      - name: Setup gcloud
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: Deploy Cloud Run
-        run: |
-          gcloud run deploy joli-dev \
-          --source . \
-          --region northamerica-south1 \
-          --platform managed \
-          --allow-unauthenticated
+  
