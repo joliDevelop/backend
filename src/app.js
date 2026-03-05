@@ -1,4 +1,3 @@
- /* hola */
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -16,12 +15,9 @@ app.use(express.json());
 const userRoutes = require("./routers/user");
 app.use("/api/users", userRoutes);
 
-
-// Ruta base (landing)
 app.get("/", (req, res) => {
-  res.send(`<html><h1>App Joli Backend - </h1></html>`);
+  res.send(`<html><h1>App Joli Backend</h1></html>`);
 });
-
 
 const startServer = async () => {
   try {
@@ -35,9 +31,12 @@ const startServer = async () => {
 
   } catch (error) {
     console.error("Error al iniciar servidor:", error);
-    process.exit(1); 
+    process.exit(1);
   }
 };
 
-startServer();
+if (process.env.NODE_ENV !== "test") {
+  startServer();
+}
+
 module.exports = app;
