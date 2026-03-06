@@ -1,31 +1,46 @@
-name: Joli Backend CI/CD
+name: Deploy to Cloud Run
 
 on:
   push:
     branches:
-      - develop
+      - main
 
 jobs:
-
-  test:
-    name: Run Tests
+  test-and-deploy:
     runs-on: ubuntu-latest
 
-    steps:
+    permissions:
+      contents: read
+      id-token: write
 
-      - name: Clonar repositorio
+    steps:
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Instalar Node
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Instalar dependencias
+      - name: Install dependencies
         run: npm install
 
-      - name: Ejecutar tests
+      - name: Run tests
         run: npm test
 
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/732206415367/locations/global/workloadIdentityPools/github-pool/providers/github
+          service_account: github-deploy@dotted-ranger-489116-c6.iam.gserviceaccount.com
 
-  
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy joli-backend \
+            --source . \
+            --region us-central1 \
+            --platform managed \
+            --allow-unauthenticated
