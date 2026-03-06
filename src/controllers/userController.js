@@ -49,9 +49,16 @@ exports.registerUser = async (req, res) => {
     }
 
     // Confirmación de contraseña
-    if (String(password) !== String(confirmPassword)) {
-      return res.status(400).json({ message: "Las contraseñas no coinciden" });
-    }
+  const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>_\-\\[\]/+=~`]).{8,}$/;
+
+if (!passwordRegex.test(String(password))) {
+  return res.status(400).json({
+    message:
+      "La contraseña debe tener mínimo 8 caracteres, al menos un número y un carácter especial",
+  });
+}
+
+
 
     const cleanNombre = String(nombre).trim();
     const cleanApellidoP = String(apellidoP).trim();
