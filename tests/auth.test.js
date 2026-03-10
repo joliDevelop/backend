@@ -10,31 +10,32 @@ describe("Auth endpoints", () => {
     const res = await request(app)
       .post("/api/users/register")
       .send({
-        nombre: "Hector",
-        apellidoP: "Cervantes",
+        nombre: "messi",
+        apellidoP: "ronaldo",
         apellidoM: "Dev",
         edad: 25,
-        email: "hector@test.com",
-        password: "hector@123",
-        confirmPassword: "123456",
+        email: "messi@test.com",
+        password: "messi@123",
+        confirmPassword: "messi@123",
         lada: "+52",
-        telefono: "4421234500"
+        telefono: "4416611232"
       });
 
     expect(res.statusCode).toBe(201);
-    expect(res.body).toHaveProperty("user");
+    expect(res.body).toHaveProperty("user"); 
   });
 
   test("Login usuario", async () => {
     const res = await request(app)
       .post("/api/users/login")
       .send({
-        email: "hector@test.com",
-        password: "hector@123"
+        email: "messi@test.com",
+        password: "messi@123"
       });
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("token");
   });
+  
 
 });

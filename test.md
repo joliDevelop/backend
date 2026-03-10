@@ -22,14 +22,14 @@ Configurar package.json
 },
 
 # Correr el test manual
-npm test <!-- Correr los test >
-
+npm test 
+npx jest --runInBand --verbose 
 
 # Carpetas creadas correctamente
 <!-- se crea la carpeta   --> 
 .github/workflows
 <!-- y dentro  --> 
-deploy.yml
+ci-cd.yml
 
 <!-- se crea la carpeta   --> 
 .tests

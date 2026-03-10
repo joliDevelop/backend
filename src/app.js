@@ -15,6 +15,9 @@ app.use(express.json());
 const userRoutes = require("./routers/user");
 app.use("/api/users", userRoutes);
 
+const mapsRoutes = require("./routers/apimaps");
+app.use("/api/maps", mapsRoutes);
+
 app.get("/", (req, res) => {
   res.send(`<html><h1>App Joli Backend</h1></html>`);
 });
