@@ -17,6 +17,10 @@ exports.getGoogleReviews = async (req, res) => {
     }
 
     const reviews = (data.result.reviews || [])
+      .filter((review) => {
+        const text = review.text?.trim();
+        return text && text.length > 0;
+      })
       .map((review) => ({
         author_name: review.author_name,
         author_url: review.author_url,
@@ -25,16 +29,25 @@ exports.getGoogleReviews = async (req, res) => {
         profile_photo_url: review.profile_photo_url,
         rating: review.rating,
         relative_time_description: review.relative_time_description,
-        text: review.text,
+        text: review.text.trim(),
         time: review.time,
         translated: review.translated
       }))
-      .sort((a, b) => b.time - a.time);
+      .sort((a, b) => {
+        // Primero las más recientes
+        if (b.time !== a.time) {
+          return b.time - a.time;
+        }
+
+        // Si tienen la misma fecha, primero mejor puntuación
+        return b.rating - a.rating;
+      });
 
     return res.json({
       negocio: data.result.name,
       rating: data.result.rating,
       total_reviews: data.result.user_ratings_total,
+      total_reviews_con_comentario: reviews.length,
       reviews
     });
   } catch (error) {
