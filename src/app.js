@@ -1,22 +1,21 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
-
 dotenv.config();
-
 const connectDB = require("./config/db");
 const app = express();
-
 // Middlewares globales
 app.use(cors());
 app.use(express.json());
 
-// Rutas de usuarios
+// rutas 
 const userRoutes = require("./routers/user");
-app.use("/api/users", userRoutes);
-
 const mapsRoutes = require("./routers/apimaps");
+const twilioRoutes = require("./routers/twilio");
+
+app.use("/api/users", userRoutes);
 app.use("/api/maps", mapsRoutes);
+app.use("/api/twilio", twilioRoutes);
 
 app.get("/", (req, res) => {
   res.send(`<html><h1>App Joli Backend</h1></html>`);
