@@ -11,8 +11,6 @@ exports.registerUser = async (req, res) => {
       apellidoM,
       edad,
       email,
-      password,
-      confirmPassword,
       lada,
       telefono,
     } = req.body;
@@ -40,24 +38,21 @@ exports.registerUser = async (req, res) => {
       !apellidoP ||
       !apellidoM ||
       edad === undefined ||
-      !password ||
-      !confirmPassword ||
       !lada ||
       !telefono
     ) {
       return res.status(400).json({ message: "Todos los campos son obligatorios" });
     }
 
-    // Confirmación de contraseña
-  const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>_\-\\[\]/+=~`]).{8,}$/;
+    // // Confirmación de contraseña
+    // const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>_\-\\[\]/+=~`]).{8,}$/;
 
-if (!passwordRegex.test(String(password))) {
-  return res.status(400).json({
-    message:
-      "La contraseña debe tener mínimo 8 caracteres, al menos un número y un carácter especial",
-  });
-}
-
+    // if (!passwordRegex.test(String(password))) {
+    //   return res.status(400).json({
+    //     message:
+    //       "La contraseña debe tener mínimo 8 caracteres, al menos un número y un carácter especial",
+    //   });
+    // }
 
 
     const cleanNombre = String(nombre).trim();
@@ -81,9 +76,9 @@ if (!passwordRegex.test(String(password))) {
       return res.status(400).json({ message: "Edad inválida (18 a 120)" });
     }
 
-    if (String(password).length < 6) {
-      return res.status(400).json({ message: "La contraseña debe tener al menos 6 caracteres" });
-    }
+    // if (String(password).length < 6) {
+    //   return res.status(400).json({ message: "La contraseña debe tener al menos 6 caracteres" });
+    // }
 
     // Validar duplicado de teléfono aparte (ya validamos email arriba)
     const existingPhone = await User.findOne({ telefono: cleanTelefono });
@@ -92,27 +87,27 @@ if (!passwordRegex.test(String(password))) {
     }
 
     // 🔥 Rol automático: cliente
-    let clienteRole = await Role.findOne({ name: "cliente" }).select("_id");
-    if (!clienteRole) {
-      clienteRole = await Role.create({ name: "cliente" });
-    }
+    // let clienteRole = await Role.findOne({ name: "cliente" }).select("_id");
+    // if (!clienteRole) {
+    //   clienteRole = await Role.create({ name: "cliente" });
+    // }
 
-    const hashedPassword = await bcrypt.hash(String(password), 10);
+    // const hashedPassword = await bcrypt.hash(String(password), 10);
 
-    const newUser = await User.create({
-      nombre: cleanNombre,
-      apellidop: cleanApellidoP,
-      apellidom: cleanApellidoM,
-      edad: cleanEdad,
-      email: cleanEmail,
-      password: hashedPassword,
-      lada: cleanLada,
-      telefono: cleanTelefono,
-      role: clienteRole._id,
-    });
+    // const newUser = await User.create({
+    //   nombre: cleanNombre,
+    //   apellidop: cleanApellidoP,
+    //   apellidom: cleanApellidoM,
+    //   edad: cleanEdad,
+    //   email: cleanEmail,
+    //   password: hashedPassword,
+    //   lada: cleanLada,
+    //   telefono: cleanTelefono,
+    //   role: clienteRole._id,
+    // });
 
-    return res.status(201).json({
-      message: "Usuario registrado correctamente",
+    return res.status(200).json({
+      message: "Usuario listo para registro ",
       user: newUser,
 
     });
