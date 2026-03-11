@@ -5,8 +5,7 @@ exports.getGoogleReviews = async (req, res) => {
     const placeId = process.env.GOOGLE_MAPS_PLACE_ID;
     const apiKey = process.env.GOOGLE_MAPS_KEY;
 
-    const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,rating,reviews,user_ratings_total&reviews_sort=newest&language=es&key=${apiKey}`;
-
+const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,rating,reviews,user_ratings_total&reviews_sort=most_relevant&language=es&key=${apiKey}`;
     const { data } = await axios.get(url);
 
     if (data.status !== "OK") {
@@ -16,12 +15,12 @@ exports.getGoogleReviews = async (req, res) => {
       });
     }
 
-    const reviews = (data.result.reviews || [])
-      .filter((review) => {
-        const text = review.text?.trim();
-        return text && text.length > 0;
-      })
-      .map((review) => ({
+    const allReviews = data.result.reviews || [];
+
+    // solo reseñas que tengan comentario
+    const reviews = allReviews
+      .filter(review => review.text && review.text.trim().length > 0)
+      .map(review => ({
         author_name: review.author_name,
         author_url: review.author_url,
         language: review.language,
@@ -32,24 +31,17 @@ exports.getGoogleReviews = async (req, res) => {
         text: review.text.trim(),
         time: review.time,
         translated: review.translated
-      }))
-      .sort((a, b) => {
-        // Primero las más recientes
-        if (b.time !== a.time) {
-          return b.time - a.time;
-        }
-
-        // Si tienen la misma fecha, primero mejor puntuación
-        return b.rating - a.rating;
-      });
+      }));
 
     return res.json({
       negocio: data.result.name,
-      rating: data.result.rating,
+      rating_general: data.result.rating,
       total_reviews: data.result.user_ratings_total,
+      total_reviews_recibidas_de_google: allReviews.length,
       total_reviews_con_comentario: reviews.length,
       reviews
     });
+
   } catch (error) {
     console.error("Error obteniendo reseñas:", error.response?.data || error.message);
 
