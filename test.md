@@ -8,8 +8,8 @@ curl ifconfig.me
 npm install --save-dev jest supertest
 <!-- en git para las pruebas no se usa BD real  -->
 npm install --save-dev mongodb-memory-server
-
 npm install axios   
+npm install mailer
 
 # Dependencias instaladas manual
 Configurar package.json
