@@ -8,7 +8,7 @@ describe("Auth endpoints", () => {
 
   test("Registro de usuario", async () => {
     const res = await request(app)
-      .post("/api/users/registrar")
+      .post("/api/users/pre-registro")
       .send({
         nombre: "messi",
         apellidoP: "ronaldo",
@@ -19,7 +19,7 @@ describe("Auth endpoints", () => {
         telefono: "4416611232"
       });
 
-    expect(res.statusCode).toBe(200); 
+    expect(res.statusCode).toBe(201); 
   });
 
   /* test("Login usuario", async () => {
