@@ -5,10 +5,10 @@ const registerController = require("../controllers/registerController");
 const userController = require("../controllers/userController");
 const auth = require("../middlewares/authMiddleware");
 
-router.post("/registrar", registerController.preRegisterUser);
+router.post("/pre-registro", registerController.preRegisterUser);
 router.post("/enviar-codigo", registerController.sendVerificationCode);
-router.post("/verificar-email", registerController.verifyEmailCode);
-router.post("/crear-contraseña", registerController.createPassword);
+router.post("/verificar-codigo", registerController.verifyCode);
+router.post("/crear-contrasena", registerController.createPassword);
 router.post("/login", userController.loginUser);
 
 router.get("/me", auth, (req, res) => {
