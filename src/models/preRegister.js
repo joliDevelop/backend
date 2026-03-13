@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const usuarioSchema = new mongoose.Schema(
+const preRegisterSchema = new mongoose.Schema(
   {
     nombre: {
       type: String,
@@ -9,14 +9,14 @@ const usuarioSchema = new mongoose.Schema(
       minlength: [2, "El nombre debe tener al menos 2 caracteres"],
       maxlength: [50, "El nombre no puede exceder 50 caracteres"],
     },
-    apellidop: {
+    apellidoP: {
       type: String,
       required: true,
       trim: true,
       minlength: [2, "El apellido paterno debe tener al menos 2 caracteres"],
       maxlength: [50, "El apellido paterno no puede exceder 50 caracteres"],
     },
-    apellidom: {
+    apellidoM: {
       type: String,
       required: true,
       trim: true,
@@ -29,16 +29,12 @@ const usuarioSchema = new mongoose.Schema(
       min: 18,
       max: 120,
     },
-    password: {
-      type: String,
-      required: true,
-    },
     email: {
       type: String,
       required: true,
-      unique: true,
       lowercase: true,
       trim: true,
+      unique: true,
       match: [/^\S+@\S+\.\S+$/, "Formato de correo inválido"],
     },
     lada: {
@@ -50,31 +46,29 @@ const usuarioSchema = new mongoose.Schema(
     telefono: {
       type: String,
       required: true,
-      unique: true,
       trim: true,
-      match: [
-        /^\d{10}$/,
-        "El teléfono debe tener exactamente 10 dígitos numéricos",
-      ],
+      match: [/^\d{10}$/, "El teléfono debe tener exactamente 10 dígitos"],
     },
-    isEmailVerified: {
+    isCodeVerified: {
       type: Boolean,
       default: false,
     },
-    registrationCompleted: {
-      type: Boolean,
-      default: false,
+    verifiedAt: {
+      type: Date,
+      default: null,
     },
-    role: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Role",
+    expiresAt: {
+      type: Date,
       required: true,
     },
   },
   { timestamps: true }
 );
 
-usuarioSchema.index({ email: 1 });
-usuarioSchema.index({ telefono: 1 });
+// TTL: elimina automáticamente el pre-registro cuando expire
+preRegisterSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-module.exports = mongoose.model("Usuario", usuarioSchema);
+// Índice útil para búsquedas rápidas por email
+preRegisterSchema.index({ email: 1 });
+
+module.exports = mongoose.model("PreRegister", preRegisterSchema);
