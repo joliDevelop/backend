@@ -1,13 +1,23 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const User = require("../models/usuarios");
 const Role = require("../models/role");
-const bcrypt = require("bcryptjs");
+const PreRegister = require("../models/preRegister");
 const VerificationCode = require("../models/verificationCode");
 const transporter = require("../config/mailer");
-const PreRegister = require("../models/preRegister");
-const jwt = require("jsonwebtoken");
-// =========================
+
+
+// Constantes
+const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
+const LADA_REGEX = /^\+\d{1,4}$/;
+const TELEFONO_REGEX = /^\d{10}$/;
+const VALID_CHANNELS = ["email", "sms", "whatsapp"];
+const PASSWORD_REGEX =
+  /^(?=.*[0-7])(?=.*[!@#$%^&*(),.?":{}|<>_\-\\[\]/+=~`]).{6,}$/;
+
+
 // Helpers
-// =========================
+
 
 function generateSixDigitCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
@@ -55,8 +65,7 @@ function validatePreRegisterFields(body = {}) {
     };
   }
 
-  const emailRegex = /^\S+@\S+\.\S+$/;
-  if (!emailRegex.test(cleanEmail)) {
+  if (!EMAIL_REGEX.test(cleanEmail)) {
     return {
       ok: false,
       status: 400,
@@ -68,8 +77,7 @@ function validatePreRegisterFields(body = {}) {
     };
   }
 
-  const ladaRegex = /^\+\d{1,4}$/;
-  if (!ladaRegex.test(cleanLada)) {
+  if (!LADA_REGEX.test(cleanLada)) {
     return {
       ok: false,
       status: 400,
@@ -81,8 +89,7 @@ function validatePreRegisterFields(body = {}) {
     };
   }
 
-  const telefonoRegex = /^\d{10}$/;
-  if (!telefonoRegex.test(cleanTelefono)) {
+  if (!TELEFONO_REGEX.test(cleanTelefono)) {
     return {
       ok: false,
       status: 400,
@@ -130,9 +137,39 @@ async function getClienteRole() {
   return clienteRole;
 }
 
-// =========================
+function buildExpiredProcessResponse() {
+  return {
+    ok: false,
+    message: "Este proceso ya expiró. Vuelve a iniciarlo.",
+  };
+}
+
+function buildPasswordValidationError() {
+  return {
+    ok: false,
+    message:
+      "La contraseña debe tener mínimo 6 caracteres, al menos un número y un carácter especial",
+    field: "password",
+  };
+}
+
+function buildUserResponse(user) {
+  return {
+    _id: user._id,
+    nombre: user.nombre,
+    apellidoP: user.apellidop,
+    apellidoM: user.apellidom,
+    edad: user.edad,
+    email: user.email,
+    lada: user.lada,
+    telefono: user.telefono,
+    role: user.role,
+  };
+}
+
+
 // 1) PRE REGISTRO
-// =========================
+
 
 exports.preRegisterUser = async (req, res) => {
   try {
@@ -188,14 +225,14 @@ exports.preRegisterUser = async (req, res) => {
       },
       {
         upsert: true,
-        new: true,
+        returnDocument: "after",
         setDefaultsOnInsert: true,
       }
     );
 
     await VerificationCode.deleteMany({ email: cleanEmail });
 
-    return res.status(201).json({
+    return res.status(200).json({
       ok: true,
       message: "Pre-registro guardado correctamente",
       nextStep: "sendVerificationCode",
@@ -211,9 +248,9 @@ exports.preRegisterUser = async (req, res) => {
   }
 };
 
-// =========================
+
 // 2) ENVIAR CÓDIGO
-// =========================
+
 
 exports.sendVerificationCode = async (req, res) => {
   try {
@@ -229,8 +266,7 @@ exports.sendVerificationCode = async (req, res) => {
     const cleanEmail = String(email).trim().toLowerCase();
     const cleanChannel = String(channel).trim().toLowerCase();
 
-    const emailRegex = /^\S+@\S+\.\S+$/;
-    if (!emailRegex.test(cleanEmail)) {
+    if (!EMAIL_REGEX.test(cleanEmail)) {
       return res.status(400).json({
         ok: false,
         message: "Formato de correo inválido",
@@ -238,7 +274,7 @@ exports.sendVerificationCode = async (req, res) => {
       });
     }
 
-    if (!["email", "sms", "whatsapp"].includes(cleanChannel)) {
+    if (!VALID_CHANNELS.includes(cleanChannel)) {
       return res.status(400).json({
         ok: false,
         message: "Canal inválido. Usa: email, sms o whatsapp",
@@ -258,10 +294,7 @@ exports.sendVerificationCode = async (req, res) => {
       await PreRegister.deleteOne({ _id: preRegister._id });
       await VerificationCode.deleteMany({ email: cleanEmail });
 
-      return res.status(400).json({
-        ok: false,
-        message: "El pre-registro expiró. Vuelve a iniciar el proceso.",
-      });
+      return res.status(410).json(buildExpiredProcessResponse());
     }
 
     const code = generateSixDigitCode();
@@ -301,7 +334,7 @@ exports.sendVerificationCode = async (req, res) => {
       });
     }
 
-    return res.status(201).json({
+    return res.status(200).json({
       ok: true,
       message: "Código de verificación enviado correctamente",
       channel: cleanChannel,
@@ -318,9 +351,9 @@ exports.sendVerificationCode = async (req, res) => {
   }
 };
 
-// =========================
+
 // 3) VERIFICAR CÓDIGO
-// =========================
+
 
 exports.verifyCode = async (req, res) => {
   try {
@@ -352,7 +385,7 @@ exports.verifyCode = async (req, res) => {
     if (verification.expiresAt < new Date()) {
       await VerificationCode.deleteOne({ _id: verification._id });
 
-      return res.status(400).json({
+      return res.status(410).json({
         ok: false,
         message: "El código expiró",
       });
@@ -368,10 +401,13 @@ exports.verifyCode = async (req, res) => {
       {
         isCodeVerified: true,
         verifiedAt: new Date(),
+      },
+      {
+        returnDocument: "after",
       }
     );
 
-    return res.status(201).json({
+    return res.status(200).json({
       ok: true,
       message: "Código verificado correctamente",
       nextStep: "createPassword",
@@ -387,9 +423,9 @@ exports.verifyCode = async (req, res) => {
   }
 };
 
-// =========================
+
 // 4) CREAR CONTRASEÑA Y USUARIO FINAL
-// =========================
+
 
 exports.createPassword = async (req, res) => {
   try {
@@ -414,16 +450,8 @@ exports.createPassword = async (req, res) => {
       });
     }
 
-    const passwordRegex =
-      /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>_\-\\[\]/+=~`]).{8,}$/;
-
-    if (!passwordRegex.test(cleanPassword)) {
-      return res.status(400).json({
-        ok: false,
-        message:
-          "La contraseña debe tener mínimo 8 caracteres, al menos un número y un carácter especial",
-        field: "password",
-      });
+    if (!PASSWORD_REGEX.test(cleanPassword)) {
+      return res.status(400).json(buildPasswordValidationError());
     }
 
     const preRegister = await PreRegister.findOne({ email: cleanEmail });
@@ -445,10 +473,7 @@ exports.createPassword = async (req, res) => {
       await PreRegister.deleteOne({ _id: preRegister._id });
       await VerificationCode.deleteMany({ email: cleanEmail });
 
-      return res.status(400).json({
-        ok: false,
-        message: "El pre-registro expiró. Vuelve a iniciar el proceso.",
-      });
+      return res.status(410).json(buildExpiredProcessResponse());
     }
 
     const existingUserByEmail = await User.findOne({ email: cleanEmail });
@@ -488,7 +513,6 @@ exports.createPassword = async (req, res) => {
       role: clienteRole._id,
     });
 
-    // Generar token igual que en login
     const payload = {
       userId: newUser._id,
       role: newUser.role,
@@ -504,17 +528,7 @@ exports.createPassword = async (req, res) => {
     return res.status(201).json({
       ok: true,
       message: "Usuario registrado correctamente",
-      user: {
-        _id: newUser._id,
-        nombre: newUser.nombre,
-        apellidoP: newUser.apellidop,
-        apellidoM: newUser.apellidom,
-        edad: newUser.edad,
-        email: newUser.email,
-        lada: newUser.lada,
-        telefono: newUser.telefono,
-        role: newUser.role,
-      },
+      user: buildUserResponse(newUser),
       token,
     });
   } catch (err) {
@@ -543,8 +557,9 @@ exports.createPassword = async (req, res) => {
     });
   }
 };
-// =========================
+
+
 // Compatibilidad
-// =========================
+
 
 exports.registerUser = exports.createPassword;
