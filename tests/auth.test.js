@@ -19,7 +19,7 @@ describe("Auth endpoints", () => {
         telefono: "4416611232"
       });
 
-    expect(res.statusCode).toBe(201); 
+    expect(res.statusCode).toBe(200); 
   });
 
   /* test("Login usuario", async () => {

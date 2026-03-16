@@ -12,10 +12,12 @@ app.use(express.json());
 const userRoutes = require("./routers/user");
 const mapsRoutes = require("./routers/apimaps");
 const twilioRoutes = require("./routers/twilio");
+const mailTestRoutes = require("./routers/mailtest");
 
 app.use("/api/users", userRoutes);
 app.use("/api/maps", mapsRoutes);
 app.use("/api/twilio", twilioRoutes);
+app.use("/api/mail", mailTestRoutes);
 
 app.get("/", (req, res) => {
   res.send(`<html><h1>App Joli Backend</h1></html>`);
