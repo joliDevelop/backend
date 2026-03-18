@@ -259,7 +259,7 @@ exports.sendVerificationCode = async (req, res) => {
     if (!email || !channel) {
       return res.status(400).json({
         ok: false,
-        message: "Correo y canal son obligatorios",
+        message: "Correo y método de envío son obligatorios",
       });
     }
 
@@ -277,7 +277,7 @@ exports.sendVerificationCode = async (req, res) => {
     if (!VALID_CHANNELS.includes(cleanChannel)) {
       return res.status(400).json({
         ok: false,
-        message: "Canal inválido. Usa: email, sms o whatsapp",
+        message: "Método de envío inválido. Usa: email, sms o whatsapp",
         field: "channel",
       });
     }
@@ -286,7 +286,7 @@ exports.sendVerificationCode = async (req, res) => {
     if (!preRegister) {
       return res.status(404).json({
         ok: false,
-        message: "No existe un pre-registro para este correo",
+        message: "No existe la información de pre-registro para este correo",
       });
     }
 
@@ -312,19 +312,99 @@ exports.sendVerificationCode = async (req, res) => {
     });
 
     if (cleanChannel === "email") {
-      const info = await transporter.sendMail({
-        from: `"Joli" <${process.env.EMAIL_USER}>`,
-        to: cleanEmail,
-        subject: "Código de verificación",
-        html: `
-          <div style="font-family: Arial, sans-serif; line-height: 1.5;">
-            <h2>Verificación de cuenta</h2>
-            <p>Hola, este es tu código de verificación:</p>
-            <h1 style="letter-spacing: 4px;">${code}</h1>
-            <p>Este código expira en 10 minutos.</p>
-          </div>
-        `,
-      });
+     const info = await transporter.sendMail({
+  from: `"Joli" <${process.env.EMAIL_USER}>`,
+  to: cleanEmail,
+  subject: "Código de verificación",
+  html: `
+    <div style="margin:0; padding:0; background-color:#f4f7fb; font-family: Arial, Helvetica, sans-serif;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f4f7fb; padding: 40px 16px;">
+        <tr>
+          <td align="center">
+            
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 520px; background-color:#ffffff; border-radius:20px; overflow:hidden;">
+              
+              <!-- Título -->
+              <tr>
+                <td align="center" style="padding: 40px 32px 10px;">
+                  <h1 style="margin:0; font-size:30px; line-height:1.2; color:#2f3640; font-weight:700;">
+                    Verificación de cuenta
+                  </h1>
+                </td>
+              </tr>
+
+              <!-- Texto -->
+              <tr>
+                <td style="padding: 0 40px;">
+                  <p style="margin:0 0 16px; font-size:16px; color:#4b5563;">
+                    Hola,
+                  </p>
+
+                  <p style="margin:0 0 20px; font-size:16px; color:#4b5563;">
+                    Usa el siguiente código para verificar tu cuenta en <strong>Joli</strong>:
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Código -->
+              <tr>
+                <td align="center" style="padding: 10px 40px 20px;">
+                  <div style="
+                    display:inline-block;
+                    background-color:#f1f5f9;
+                    padding:18px 28px;
+                    border-radius:12px;
+                    font-size:28px;
+                    letter-spacing:10px;
+                    font-weight:700;
+                    color:#111827;
+                  ">
+                    ${code}
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Expiración -->
+              <tr>
+                <td align="center" style="padding: 0 40px 25px;">
+                  <p style="margin:0; font-size:15px; color:#374151;">
+                    Este código expira en <strong>10 minutos</strong>.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Divider -->
+              <tr>
+                <td style="padding: 0 40px;">
+                  <div style="height:1px; background:#e5e7eb;"></div>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 20px 40px 10px;">
+                  <p style="margin:0; font-size:13px; color:#6b7280; text-align:center;">
+                    Si no solicitaste este código, puedes ignorar este mensaje.
+                  </p>
+                </td>
+              </tr>
+
+              <tr>
+                <td style="padding: 10px 40px 30px;">
+                  <p style="margin:0; font-size:12px; color:#9ca3af; text-align:center;">
+                    © ${new Date().getFullYear()} Joli. Todos los derechos reservados.
+                  </p>
+                </td>
+              </tr>
+
+            </table>
+
+          </td>
+        </tr>
+      </table>
+    </div>
+  `,
+});
 
       console.log("Correo enviado:", info.response);
     } else {

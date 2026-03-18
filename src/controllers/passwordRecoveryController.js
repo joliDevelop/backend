@@ -10,8 +10,8 @@ const PASSWORD_REGEX =
   /^(?=.*[0-7])(?=.*[!@#$%^&*(),.?":{}|<>_\-\\[\]/+=~`]).{6,}$/;
 
 function buildResetLink(token) {
-  const baseUrl = process.env.FRONTEND_URL || "http://localhost:3000";
-  return `${baseUrl}/reset-password?token=${token}`;
+  const baseUrl = process.env.FRONTEND_URL;
+  return `${baseUrl}/reset/password?token=${token}`;
 }
 
 function buildPasswordValidationError() {
@@ -23,13 +23,13 @@ function buildPasswordValidationError() {
   };
 }
 
-// =========================
+
 // 1) SOLICITAR RECUPERACIÓN
-// =========================
+
 
 exports.forgotPassword = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email } = req.body || {};
 
     if (!email) {
       return res.status(400).json({
@@ -51,12 +51,11 @@ exports.forgotPassword = async (req, res) => {
 
     const user = await User.findOne({ email: cleanEmail });
 
-    // Respuesta neutra por seguridad
     if (!user) {
-      return res.status(200).json({
-        ok: true,
-        message:
-          "Si el correo existe, se enviaron instrucciones para recuperar la contraseña",
+      return res.status(404).json({
+        ok: false,
+        message: "No existe una cuenta registrada con este correo",
+        field: "email",
       });
     }
 
@@ -72,32 +71,71 @@ exports.forgotPassword = async (req, res) => {
       expiresAt,
     });
 
-    const info = await transporter.sendMail({
-      from: `"Joli" <${process.env.EMAIL_USER}>`,
-      to: cleanEmail,
-      subject: "Recuperación de contraseña",
-      html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.5;">
-          <h2>Recuperar contraseña</h2>
-          <p>Recibimos una solicitud para restablecer tu contraseña.</p>
-          <p>Haz clic en el siguiente enlace para continuar:</p>
-          <p>
-            <a href="${resetLink}" target="_blank" rel="noopener noreferrer">
-              Restablecer contraseña
-            </a>
-          </p>
-          <p>Este enlace expira en 15 minutos.</p>
-          <p>Si no solicitaste este cambio, puedes ignorar este correo.</p>
+   const info = await transporter.sendMail({
+  from: `"Joli" <${process.env.EMAIL_USER}>`,
+  to: cleanEmail,
+  subject: "Recuperación de contraseña - Joli",
+  html: `
+    <div style="font-family: Arial, sans-serif; background-color: #f5f7fa; padding: 20px;">
+      <div style="max-width: 500px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        
+        <h2 style="color: #2c3e50; margin-bottom: 20px;">
+          Recuperación de contraseña
+        </h2>
+
+        <p style="color: #555; font-size: 14px;">
+          Hola,
+        </p>
+
+        <p style="color: #555; font-size: 14px;">
+          Recibimos una solicitud para restablecer la contraseña de tu cuenta en <strong>Joli</strong>.
+        </p>
+
+        <p style="color: #555; font-size: 14px;">
+          Para continuar, haz clic en el siguiente botón:
+        </p>
+
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${resetLink}" 
+             style="
+               background-color: #4cd6e0a2;
+               color: #000000;
+               padding: 12px 20px;
+               text-decoration: none;
+               border-radius: 6px;
+               font-weight: bold;
+               display: inline-block;
+             "
+             target="_blank" 
+             rel="noopener noreferrer">
+            Restablecer contraseña
+          </a>
         </div>
-      `,
-    });
+
+        <p style="color: #555; font-size: 13px;">
+          Este enlace es válido por <strong>15 minutos</strong>.
+        </p>
+
+        <p style="color: #999; font-size: 12px;">
+          Si no solicitaste este cambio, puedes ignorar este mensaje. Tu contraseña seguirá siendo la misma.
+        </p>
+
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+
+        <p style="color: #aaa; font-size: 11px; text-align: center;">
+          © ${new Date().getFullYear()} Joli. Todos los derechos reservados.
+        </p>
+
+      </div>
+    </div>
+  `,
+});
 
     console.log("Correo de recuperación enviado:", info.response);
 
     return res.status(200).json({
       ok: true,
-      message:
-        "Si el correo existe, se enviaron instrucciones para recuperar la contraseña",
+      message: "Se enviaron las instrucciones de recuperación a tu correo",
     });
   } catch (err) {
     console.error("Error forgotPassword:", err);
@@ -110,9 +148,9 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-// =========================
+
 // 2) VALIDAR TOKEN
-// =========================
+
 
 exports.validateResetToken = async (req, res) => {
   try {
@@ -130,7 +168,7 @@ exports.validateResetToken = async (req, res) => {
     if (!resetToken) {
       return res.status(404).json({
         ok: false,
-        message: "Token inválido o inexistente",
+        message: "la enlace de recuperación es inválido o no existe",
       });
     }
 
@@ -152,15 +190,15 @@ exports.validateResetToken = async (req, res) => {
 
     return res.status(500).json({
       ok: false,
-      message: "Error al validar el token de recuperación",
+      message: "Error al validar la recuperación de contraseña",
       error: err.message,
     });
   }
 };
 
-// =========================
+
 // 3) RESTABLECER CONTRASEÑA
-// =========================
+
 
 exports.resetPassword = async (req, res) => {
   try {
