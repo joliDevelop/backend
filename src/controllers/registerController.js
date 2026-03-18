@@ -351,7 +351,7 @@ exports.sendVerificationCode = async (req, res) => {
                 <td align="center" style="padding: 10px 40px 20px;">
                   <div style="
                     display:inline-block;
-                    background-color:#f1f5f9;
+                    background-color:#4cd6e0a2;
                     padding:18px 28px;
                     border-radius:12px;
                     font-size:28px;

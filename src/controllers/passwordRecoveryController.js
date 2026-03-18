@@ -168,7 +168,7 @@ exports.validateResetToken = async (req, res) => {
     if (!resetToken) {
       return res.status(404).json({
         ok: false,
-        message: "la enlace de recuperación es inválido o no existe",
+        message: "El enlace de recuperación es inválido o no existe",
       });
     }
 

@@ -68,7 +68,4 @@ const preRegisterSchema = new mongoose.Schema(
 // TTL: elimina automáticamente el pre-registro cuando expire
 preRegisterSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-// Índice útil para búsquedas rápidas por email
-preRegisterSchema.index({ email: 1 });
-
 module.exports = mongoose.model("PreRegister", preRegisterSchema);

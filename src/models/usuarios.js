@@ -74,7 +74,5 @@ const usuarioSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-usuarioSchema.index({ email: 1 });
-usuarioSchema.index({ telefono: 1 });
 
 module.exports = mongoose.model("Usuario", usuarioSchema);
