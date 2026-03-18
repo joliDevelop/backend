@@ -10,6 +10,7 @@ npm install --save-dev jest supertest
 npm install --save-dev mongodb-memory-server
 npm install axios   
 npm install mailer
+npm install nodemailer
 
 # Dependencias instaladas manual
 Configurar package.json
