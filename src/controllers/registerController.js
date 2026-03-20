@@ -1,3 +1,5 @@
+// Gestiona el flujo completo de registro de usuarios: pre-registro, envío y verificación de código, y creación final con autenticación
+// Incluye validaciones, expiración de procesos, hash de contraseña, asignación de rol y generación de JWT
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/usuarios");

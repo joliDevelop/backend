@@ -1,9 +1,9 @@
+// Maneja el inicio de sesión validando credenciales y generando un token JWT para el usuario autenticado
+// Verifica formato de correo, compara la contraseña con bcrypt y devuelve los datos básicos del usuario
 const User = require("../models/usuarios");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Role = require("../models/role");
-
-
 
 exports.loginUser = async (req, res) => {
   try {

@@ -1,3 +1,5 @@
+// Define el esquema para tokens de recuperación de contraseña con expiración automática (TTL)
+// Permite validar solicitudes de reset y elimina tokens vencidos automáticamente
 const mongoose = require("mongoose");
 
 const passwordResetTokenSchema = new mongoose.Schema(

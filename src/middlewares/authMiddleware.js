@@ -1,4 +1,5 @@
-
+// Middleware de autenticación que valida el token JWT enviado en el header Authorization
+// Decodifica el token y adjunta la información del usuario a la request si es válido
 const jwt = require("jsonwebtoken");
 
 module.exports = function auth(req, res, next) {
@@ -18,6 +19,3 @@ module.exports = function auth(req, res, next) {
     return res.status(401).json({ message: "Token inválido o expirado" });
   }
 };
-
-
-

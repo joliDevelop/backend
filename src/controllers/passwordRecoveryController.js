@@ -1,3 +1,5 @@
+// Gestiona el flujo de recuperación de contraseña: solicitar enlace, validar token y actualizar la nueva contraseña
+// Usa tokens temporales, validaciones de seguridad, bcrypt para el hash y envío de correo con Nodemailer
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 
@@ -232,7 +234,7 @@ exports.resetPassword = async (req, res) => {
     if (!resetToken) {
       return res.status(404).json({
         ok: false,
-        message: "Token inválido o inexistente",
+        message: "El enlace de recuperación es inválido o no existe",
       });
     }
 

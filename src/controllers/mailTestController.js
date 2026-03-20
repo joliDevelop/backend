@@ -1,3 +1,5 @@
+// Endpoint para enviar correos de prueba usando Nodemailer, validando datos y restringido a desarrollo
+// Limpia inputs, valida formato de email y retorna el resultado del envío
 const transporter = require("../config/mailer");
 
 exports.sendTestEmail = async (req, res) => {
