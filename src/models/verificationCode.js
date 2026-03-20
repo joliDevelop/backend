@@ -1,3 +1,5 @@
+// Define el esquema para códigos de verificación con expiración automática (TTL)
+// Permite validar usuarios por distintos canales (email, sms, whatsapp) y controlar su estado
 const mongoose = require("mongoose");
 
 const verificationCodeSchema = new mongoose.Schema(

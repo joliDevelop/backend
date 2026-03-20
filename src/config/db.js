@@ -1,3 +1,5 @@
+// Establece la conexión a MongoDB usando Mongoose y variables de entorno
+// Maneja errores de conexión y notifica el estado en consola
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();

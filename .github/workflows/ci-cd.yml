@@ -1,3 +1,5 @@
+# Flujo de CI/CD para ejecutar pruebas automáticamente y desplegar en Google Cloud Run según la rama
+# Corre tests en pushes a develop y main, y despliega a DEV o PROD dependiendo del branch
 name: Joli Backend CI/CD
 
 on:

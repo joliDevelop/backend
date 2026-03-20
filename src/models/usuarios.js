@@ -1,3 +1,5 @@
+// Define el esquema principal de usuarios con validaciones, credenciales y relación a roles
+// Almacena información personal, autenticación y estado de verificación del usuario 
 const mongoose = require("mongoose");
 
 const usuarioSchema = new mongoose.Schema(

@@ -1,3 +1,5 @@
+// Obtiene reseñas de Google Places, filtra las que tienen comentario y devuelve las más recientes
+// Formatea la respuesta con información del negocio y estadísticas de reseñas
 const axios = require("axios");
 
 exports.getGoogleReviews = async (req, res) => {
@@ -5,7 +7,7 @@ exports.getGoogleReviews = async (req, res) => {
     const placeId = process.env.GOOGLE_MAPS_PLACE_ID;
     const apiKey = process.env.GOOGLE_MAPS_KEY;
 
-const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,rating,reviews,user_ratings_total&reviews_sort=most_relevant&language=es&key=${apiKey}`;
+    const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,rating,reviews,user_ratings_total&reviews_sort=most_relevant&language=es&key=${apiKey}`;
     const { data } = await axios.get(url);
 
     if (data.status !== "OK") {
@@ -20,6 +22,7 @@ const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${
     // solo reseñas que tengan comentario
     const reviews = allReviews
       .filter(review => review.text && review.text.trim().length > 0)
+      .sort((a, b) => b.time - a.time) // 🔥 más recientes primero
       .map(review => ({
         author_name: review.author_name,
         author_url: review.author_url,

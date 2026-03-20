@@ -1,3 +1,5 @@
+// Define el esquema de roles del sistema con valores permitidos para control de acceso
+// Permite asignar y validar los roles únicos que puede tener un usuario
 const mongoose = require("mongoose");
 
 const roleSchema = new mongoose.Schema({

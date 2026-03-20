@@ -1,3 +1,5 @@
+// Configura y levanta el servidor Express conectando a la base de datos y registrando rutas y middlewares globales
+// Inicializa la aplicación, define endpoints principales y controla el arranque del servidor
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");

@@ -1,3 +1,5 @@
+// Define el esquema de pre-registro con validaciones de datos y expiración automática (TTL)
+// Almacena información temporal del usuario antes de completar el registro final
 const mongoose = require("mongoose");
 
 const preRegisterSchema = new mongoose.Schema(

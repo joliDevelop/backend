@@ -1,3 +1,5 @@
+// Maneja el envío y verificación de códigos SMS usando Twilio Verify
+// Permite autenticar usuarios mediante código enviado al teléfono
 // install 
 // npm install twilio
 
