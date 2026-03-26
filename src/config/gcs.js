@@ -1,5 +1,9 @@
-import { Storage } from '@google-cloud/storage';
+// Inicializa cliente de Google Cloud Storage usando credenciales automáticas (ADC) y conecta al bucket
+// Exporta el bucket para reutilizarlo en controllers sin manejar claves manuales
+const { Storage } = require('@google-cloud/storage');
 
 const storage = new Storage();
 
-export const bucket = storage.bucket('imagenes-joli');
+const bucket = storage.bucket('imagenes-joli');
+
+module.exports = { bucket };
