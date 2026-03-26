@@ -20,6 +20,7 @@ jobs:
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       EMAIL_USER: ${{ secrets.EMAIL_USER }}
       EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+      GCS_BUCKET: ${{ secrets.GCS_BUCKET }}
 
     steps:
       - name: Clonar repositorio
