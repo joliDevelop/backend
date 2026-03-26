@@ -68,6 +68,16 @@ const { bucket } = require("../config/gcs");
 
 exports.getimagenes = async (req, res) => {
     try {
+        const [exists] = await bucket.exists();
+
+        if (!exists) {
+            return res.status(404).json({
+                ok: false,
+                message: "El bucket no existe o no es accesible",
+                bucket: bucket.name,
+            });
+        }
+
         const [files] = await bucket.getFiles();
 
         const imagenes = files.map((file) => ({
@@ -75,16 +85,18 @@ exports.getimagenes = async (req, res) => {
             url: `gs://${bucket.name}/${file.name}`,
         }));
 
-         res.status(200).json({
+        return res.status(200).json({
             ok: true,
+            bucket: bucket.name,
             imagenes,
         });
     } catch (error) {
         console.error("Error al obtener imágenes:", error);
 
-         res.status(500).json({
+        return res.status(500).json({
             ok: false,
             message: "Error al obtener imágenes",
+            bucket: bucket.name,
             error: error.message,
         });
     }
