@@ -1,30 +1,24 @@
-// Configura y levanta el servidor Express conectando a la base de datos y registrando rutas y middlewares globales
-// Inicializa la aplicación, define endpoints principales y controla el arranque del servidor
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+
 dotenv.config();
+
 const connectDB = require("./config/db");
+const routes = require("./routes");
+
 const app = express();
-// Middlewares globales
+
+// middlewares globales
 app.use(cors());
 app.use(express.json());
 
-// rutas 
-const userRoutes = require("./routers/user");
-const mapsRoutes = require("./routers/apimaps");
-const twilioRoutes = require("./routers/twilio");
-const mailTestRoutes = require("./routers/mailtest");
-const imagesRoutes = require("./routers/upload");
+// Endpoints
+app.use('/api', routes);
 
-app.use("/api/users", userRoutes);
-app.use("/api/maps", mapsRoutes);
-app.use("/api/twilio", twilioRoutes);
-app.use("/api/mail", mailTestRoutes);
-app.use("/api/imagenes", imagesRoutes);
-
+// endpoint base
 app.get("/", (req, res) => {
-  res.send(`<html><h1>App Joli Backend</h1></html>`);
+  res.send("<html><h1>App Joli Backend</h1></html>");
 });
 
 const startServer = async () => {

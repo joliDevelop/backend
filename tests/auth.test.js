@@ -8,7 +8,7 @@ describe("Auth endpoints", () => {
 
   test("Registro de usuario", async () => {
     const res = await request(app)
-      .post("/api/users/pre-registro")
+      .post("/api/register/pre-registro")
       .send({
         nombre: "messi",
         apellidoP: "ronaldo",
