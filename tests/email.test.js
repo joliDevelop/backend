@@ -4,7 +4,7 @@ const app = require("../src/app");
 describe("Mail test endpoint", () => {
   it("debe enviar un correo de prueba correctamente", async () => {
     const res = await request(app)
-      .post("/api/mail/test-email")
+      .post("/api/test/email")
       .send({
         to: "sistemas@joli.com.mx",
         subject: "Prueba",
