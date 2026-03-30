@@ -22,14 +22,14 @@ exports.preRegisterUser = async (body) => {
   if (!validation.ok) throw validation;
 
   const data = validation.data;
-  
-
   await repository.validateUserDoesNotExist(data);
 
   const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
 
+  console.log( data);
+
   await repository.upsertPreRegister(data, expiresAt);
-  await repository.deleteVerificationCodes(data.cleanEmail);
+  await repository.deleteVerificationCodes(data.email);
 
   return {
     ok: true,
@@ -93,16 +93,16 @@ exports.verifyCode = async (body) => {
 };
 
 exports.createPassword = async (body) => {
-  const { cleanEmail, cleanPassword } = validatePassword(body);
+  const { email, password} = validatePassword(body);
 
-  const preRegister = await repository.getPreRegister(cleanEmail);
+  const preRegister = await repository.getPreRegister(email);
   if (!preRegister) throw { status: 404, response: { ok: false, message: "No existe preregistro" } };
 
   if (!preRegister.isCodeVerified) {
     throw { status: 400, response: { ok: false, message: "Verifica el código primero" } };
   }
 
-  const hashedPassword = await bcrypt.hash(cleanPassword, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   const role = await repository.getClienteRole();
 
@@ -112,7 +112,7 @@ exports.createPassword = async (body) => {
     expiresIn: "5d"
   });
 
-  await repository.cleanProcess(preRegister._id, cleanEmail);
+  await repository.cleanProcess(preRegister._id, email);
 
   return {
     ok: true,
