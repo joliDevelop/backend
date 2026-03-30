@@ -11,8 +11,8 @@ describe("Auth endpoints", () => {
       .post("/api/register/pre-registro")
       .send({
         nombre: "messi",
-        apellidoP: "ronaldo",
-        apellidoM: "Dev",
+        apellidop: "ronaldo",
+        apellidom: "Dev",
         edad: 25,
         email: "messi@test.com",
         lada: "+52",

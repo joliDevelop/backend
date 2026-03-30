@@ -4,20 +4,20 @@ const TELEFONO_REGEX = /^\d{10}$/;
 
 exports.validatePreRegisterFields = (body = {}) => {
   const nombre = String(body.nombre).trim();
-  const apellidoP = String(body.apellidoP).trim();
-  const apellidoM = String(body.apellidoM).trim();
+  const apellidop = String(body.apellidop).trim();
+  const apellidom = String(body.apellidom).trim();
   const edad = Number(body.edad);
   const email = String(body.email).trim().toLowerCase();
   const lada = String(body.lada).trim();
   const telefono = String(body.telefono).trim();
   if (
     !nombre ||
-    !apellidoP ||
-    !apellidoM ||
+    !apellidop ||
+    !apellidom ||
     !edad ||
     !email ||
     !lada ||
-    !telefono 
+    !telefono
   ) {
     return {
       ok: false,
@@ -54,8 +54,8 @@ exports.validatePreRegisterFields = (body = {}) => {
     ok: true,
     data: {
       nombre,
-      apellidoP,
-      apellidoM,
+      apellidop,
+      apellidom,
       edad,
       email,
       lada,

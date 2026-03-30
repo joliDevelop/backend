@@ -58,8 +58,8 @@ exports.loginUser = async ({ email, password }) => {
         user: {
             _id: user._id,
             nombre: user.nombre,
-            apellidoP: user.apellidop,
-            apellidoM: user.apellidom,
+            apellidop: user.apellidop,
+            apellidom: user.apellidom,
             edad: user.edad,
             email: user.email,
             lada: user.lada,
