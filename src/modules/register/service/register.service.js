@@ -75,7 +75,7 @@ exports.verifyCode = async (body) => {
   const { cleanEmail, cleanCode } = validateVerifyCode(body);
 
   const verification = await repository.getVerification(cleanEmail, cleanCode);
-  if (!verification) throw { status: 400, response: { ok: false, message: "Código inválido" } };
+  if (!verification) throw { status: 400, response: { ok: false, message: "Código inválido - " } };
 
   if (verification.expiresAt < new Date()) {
     await repository.deleteVerification(verification._id);
