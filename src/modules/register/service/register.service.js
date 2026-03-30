@@ -72,9 +72,11 @@ exports.sendVerificationCode = async (body) => {
 };
 
 exports.verifyCode = async (body) => {
-  const { cleanEmail, cleanCode } = validateVerifyCode(body);
+  const { email, code } = validateVerifyCode(body);
 
-  const verification = await repository.getVerification(cleanEmail, cleanCode);
+  const verification = await repository.getVerification(email, code);
+  console.log(verification);
+
   if (!verification) throw { status: 400, response: { ok: false, message: "Código inválido" } };
 
   if (verification.expiresAt < new Date()) {
@@ -83,7 +85,7 @@ exports.verifyCode = async (body) => {
   }
 
   await repository.markCodeAsVerified(verification);
-  await repository.markPreRegisterAsVerified(cleanEmail);
+  await repository.markPreRegisterAsVerified(email);
 
   return {
     ok: true,
