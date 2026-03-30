@@ -11,14 +11,14 @@ const preRegisterSchema = new mongoose.Schema(
       minlength: [2, "El nombre debe tener al menos 2 caracteres"],
       maxlength: [50, "El nombre no puede exceder 50 caracteres"],
     },
-    apellidoP: {
+    apellidop: {
       type: String,
       required: true,
       trim: true,
       minlength: [2, "El apellido paterno debe tener al menos 2 caracteres"],
       maxlength: [50, "El apellido paterno no puede exceder 50 caracteres"],
     },
-    apellidoM: {
+    apellidom: {
       type: String,
       required: true,
       trim: true,
