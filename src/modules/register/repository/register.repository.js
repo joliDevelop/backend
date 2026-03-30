@@ -3,17 +3,17 @@ const Role = require("../../user/models/userRole.model");
 const PreRegister = require("../models/preRegister.model");
 const VerificationCode = require("../models/verificationCode.model");
 
-exports.validateUserDoesNotExist = async ({ cleanEmail, cleanTelefono }) => {
-  if (await User.findOne({ email: cleanEmail }))
+exports.validateUserDoesNotExist = async ({ email, telefono }) => {
+  if (await User.findOne({ email: email }))
     throw { status: 409, response: { ok: false, message: "Email ya existe" } };
 
-  if (await User.findOne({ telefono: cleanTelefono }))
+  if (await User.findOne({ telefono: telefono }))
     throw { status: 409, response: { ok: false, message: "Teléfono ya existe" } };
 };
 
 exports.upsertPreRegister = async (data, expiresAt) => {
   return PreRegister.findOneAndUpdate(
-    { email: data.cleanEmail },
+    { email: data.email },
     { ...data, expiresAt },
     { upsert: true }
   );

@@ -3,22 +3,21 @@ const LADA_REGEX = /^\+\d{1,4}$/;
 const TELEFONO_REGEX = /^\d{10}$/;
 
 exports.validatePreRegisterFields = (body = {}) => {
-  const cleanNombre = String(body.nombre || "").trim();
-  const cleanApellidoP = String(body.apellidoP || "").trim();
-  const cleanApellidoM = String(body.apellidoM || "").trim();
-  const cleanEdad = Number(body.edad);
-  const cleanEmail = String(body.email || "").trim().toLowerCase();
-  const cleanLada = String(body.lada || "").trim();
-  const cleanTelefono = String(body.telefono || "").trim();
-
+  const nombre = String(body.nombre).trim();
+  const apellidoP = String(body.apellidoP).trim();
+  const apellidoM = String(body.apellidoM).trim();
+  const edad = Number(body.edad);
+  const email = String(body.email).trim().toLowerCase();
+  const lada = String(body.lada).trim();
+  const telefono = String(body.telefono).trim();
   if (
-    !cleanNombre ||
-    !cleanApellidoP ||
-    !cleanApellidoM ||
-    !cleanEdad ||
-    !cleanEmail ||
-    !cleanLada ||
-    !cleanTelefono
+    !nombre ||
+    !apellidoP ||
+    !apellidoM ||
+    !edad ||
+    !email ||
+    !lada ||
+    !telefono 
   ) {
     return {
       ok: false,
@@ -27,7 +26,7 @@ exports.validatePreRegisterFields = (body = {}) => {
     };
   }
 
-  if (!EMAIL_REGEX.test(cleanEmail)) {
+  if (!EMAIL_REGEX.test(email)) {
     return {
       ok: false,
       status: 400,
@@ -35,7 +34,7 @@ exports.validatePreRegisterFields = (body = {}) => {
     };
   }
 
-  if (!LADA_REGEX.test(cleanLada)) {
+  if (!LADA_REGEX.test(lada)) {
     return {
       ok: false,
       status: 400,
@@ -43,7 +42,7 @@ exports.validatePreRegisterFields = (body = {}) => {
     };
   }
 
-  if (!TELEFONO_REGEX.test(cleanTelefono)) {
+  if (!TELEFONO_REGEX.test(telefono)) {
     return {
       ok: false,
       status: 400,
@@ -54,13 +53,13 @@ exports.validatePreRegisterFields = (body = {}) => {
   return {
     ok: true,
     data: {
-      cleanNombre,
-      cleanApellidoP,
-      cleanApellidoM,
-      cleanEdad,
-      cleanEmail,
-      cleanLada,
-      cleanTelefono
+      nombre,
+      apellidoP,
+      apellidoM,
+      edad,
+      email,
+      lada,
+      telefono
     }
   };
 };
@@ -78,8 +77,8 @@ exports.validateSendCode = (body) => {
 
 exports.validateVerifyCode = (body) => {
   return {
-    cleanEmail: String(body.email).toLowerCase(),
-    cleanCode: String(body.code)
+    email: String(body.email).toLowerCase(),
+    code: String(body.code)
   };
 };
 
@@ -88,7 +87,7 @@ exports.validatePassword = (body) => {
     throw { status: 400, response: { ok: false, message: "No coinciden" } };
 
   return {
-    cleanEmail: String(body.email).toLowerCase(),
-    cleanPassword: body.password
+    email: String(body.email).toLowerCase(),
+    password: body.password
   };
 };

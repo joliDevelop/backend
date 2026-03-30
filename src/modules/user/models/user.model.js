@@ -11,14 +11,14 @@ const usuarioSchema = new mongoose.Schema(
       minlength: [2, "El nombre debe tener al menos 2 caracteres"],
       maxlength: [50, "El nombre no puede exceder 50 caracteres"],
     },
-    apellidop: {
+    apellidoP: {
       type: String,
       required: true,
       trim: true,
       minlength: [2, "El apellido paterno debe tener al menos 2 caracteres"],
       maxlength: [50, "El apellido paterno no puede exceder 50 caracteres"],
     },
-    apellidom: {
+    apellidoM: {
       type: String,
       required: true,
       trim: true,
