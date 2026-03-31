@@ -117,7 +117,7 @@ exports.createPassword = async (body) => {
   return {
     ok: true,
     message: "Usuario creado",
-    user: buildUserResponse(user),
+    user: user,
     token
   };
 };

@@ -6,7 +6,7 @@ exports.buildExpiredProcessResponse = () => ({
   message: "Proceso expirado"
 });
 
-exports.buildUserResponse = (user) => ({
-  id: user._id,
-  email: user.email
-});
+// exports.buildUserResponse = (user) => ({
+//   id: user._id,
+//   email: user.email
+// });
