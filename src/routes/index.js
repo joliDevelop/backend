@@ -10,5 +10,6 @@ router.use('/maps', require('../modules/maps/routers/maps.routes'));
 router.use('/test', require('../modules/tests/routers/test.routes'));
 router.use('/twilio', require('../modules/twilio/routers/twilio.routes'));
 router.use('/files', require('../modules/files/routers/files.routes'));
+router.use('/contact', require('../modules/contact/routers/contact.routes'));
 
 module.exports = router;
