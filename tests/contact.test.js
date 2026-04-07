@@ -11,10 +11,10 @@ describe("Contact endpoints", () => {
     const res = await request(app)
       .post("/api/contact")
       .send({
-        full_name: "Juan Pérez",
+        nombre_completo: "Juan Pérez",
         email: "juan@test.com",
-        age: 30,
-        comment: "Interesado en el servicio",
+        edad: 30,
+        comentarios: "Interesado en el servicio",
       });
 
     expect(res.statusCode).toBe(201);
@@ -25,9 +25,9 @@ describe("Contact endpoints", () => {
     const res = await request(app)
       .post("/api/contact")
       .send({
-        full_name: "María López",
-        phone: "4411234567",
-        age: 25,
+        nombre_completo: "María López",
+        telefono: "4411234567",
+        edad: 25,
       });
 
     expect(res.statusCode).toBe(201);
@@ -37,8 +37,8 @@ describe("Contact endpoints", () => {
     const res = await request(app)
       .post("/api/contact")
       .send({
-        full_name: "Sin contacto",
-        age: 20,
+        nombre_completo: "Sin contacto",
+        edad: 20,
       });
 
     expect(res.statusCode).toBe(400);
@@ -49,7 +49,7 @@ describe("Contact endpoints", () => {
     const res = await request(app)
       .post("/api/contact")
       .send({
-        full_name: "Sin edad",
+        nombre_completo: "Sin edad",
         email: "sinedad@test.com",
       });
 
