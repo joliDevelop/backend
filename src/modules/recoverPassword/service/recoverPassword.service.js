@@ -30,11 +30,51 @@ exports.forgotPassword = async (body) => {
 
   const resetLink = buildResetLink(token);
 
-  await transporter.sendMail({
-    to: cleanEmail,
-    subject: "Recuperación",
-    html: `<a href="${resetLink}">Restablecer</a>`
-  });
+ await transporter.sendMail({
+  from: `"Joli" <${process.env.EMAIL_USER}>`,
+  to: cleanEmail,
+  subject: "Recupera tu contraseña - Joli",
+  html: `
+    <div style="margin:0; padding:40px 20px; background-color:#f1f5f9; font-family:Arial, Helvetica, sans-serif; color:#334155;">
+      <div style="max-width:760px; margin:0 auto; background-color:#ffffff; border-radius:24px; padding:56px 60px; box-sizing:border-box;">
+
+        <h1 style="margin:0 0 28px; font-size:34px; line-height:1.2; text-align:center; color:#1e293b; font-weight:700;">
+          Recuperación de contraseña
+        </h1>
+
+        <p style="margin:0 0 20px; font-size:16px; line-height:1.7; color:#475569;">
+          Hola,
+        </p>
+
+        <p style="margin:0 0 32px; font-size:16px; line-height:1.7; color:#475569;">
+          Recibimos una solicitud para restablecer tu contraseña en <strong>Joli</strong>.
+        </p>
+
+        <div style="text-align:center; margin:32px 0;">
+          <a href="${resetLink}" 
+             style="display:inline-block; background-color:#0f172a; color:#ffffff; text-decoration:none; padding:14px 28px; border-radius:12px; font-size:16px; font-weight:600;">
+            Restablecer contraseña
+          </a>
+        </div>
+
+        <p style="margin:0 0 32px; font-size:15px; line-height:1.7; text-align:center; color:#475569;">
+          Este enlace es válido por <strong>15 minutos</strong>.
+        </p>
+
+        <hr style="border:none; border-top:1px solid #e2e8f0; margin:32px 0;">
+
+        <p style="margin:0 0 18px; text-align:center; font-size:14px; line-height:1.7; color:#64748b;">
+          Si no solicitaste este cambio, puedes ignorar este mensaje.
+        </p>
+
+        <p style="margin:0; text-align:center; font-size:14px; color:#94a3b8;">
+          © 2026 Joli. Todos los derechos reservados.
+        </p>
+
+      </div>
+    </div>
+  `
+});
 
   return {
     ok: true,
